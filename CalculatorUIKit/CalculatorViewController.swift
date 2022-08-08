@@ -10,15 +10,10 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet var showNumbersLabel: UILabel!
-    @IBOutlet var testButton: UIButton!
-    @IBOutlet var testButton2: UIButton!
-    @IBOutlet var testButton3: UIButton!
-    @IBOutlet var testButton4: UIButton!
-    @IBOutlet var testButton5: UIButton!
-    @IBOutlet var testButton6: UIButton!
-    @IBOutlet var testButton7: UIButton!
-    @IBOutlet var testButton8: UIButton!
-    @IBOutlet var testButton9: UIButton!
+    @IBOutlet var vStack: UIStackView!
+    @IBOutlet var firstRow: UIStackView!
+    @IBOutlet var secondRow: UIStackView!
+    @IBOutlet var thirdRow: UIStackView!
     
     var firstTime: Bool = true
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
@@ -29,12 +24,29 @@ class ViewController: UIViewController {
         
         setupNumbersLabel()
         
-        let buttons: [UIButton?] = [testButton, testButton2, testButton3, testButton4, testButton5, testButton6, testButton7, testButton8, testButton9]
-        let titles: [String?] = ["LåL", "LöL", "LäL", "LøL", "LæL", "LaaL", "Que", "LooL", "LaoL"]
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow]
+        let allTitles: [[String?]] = [["LåL", "LöL", "LäL"],
+                                   ["LøL", "LæL", "LaaL", "Que"],
+                                   [ "LooL", "LaoL"]]
         
-        for (button, title) in zip(buttons, titles) {
-            setupTestButton(for: button, withTitle: title)
+        for (row, titles) in zip(rows, allTitles) {
+            for title in titles {
+//                let button = UIButton(frame: CGRect(x: 15, y: 5, width: 150, height: 55))
+                let button = UIButton(type: .custom)
+                button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
+                button.layer.cornerRadius = 2 * button.bounds.size.width
+                button.clipsToBounds = true
+                button.backgroundColor = .systemFill
+                button.setTitle(title, for: .normal)
+                button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+                row?.spacing = 15
+                row?.addArrangedSubview(button)
+            }
         }
+        
+//        for (button, title) in zip(buttons, titles.reversed()) {
+//            setupTestButton(for: button, withTitle: title)
+//        }
     }
     
     @objc
@@ -43,7 +55,8 @@ class ViewController: UIViewController {
             return
         }
         
-        button.configuration?.background.backgroundColor = buttonColors.shuffled().first
+//        button.configuration?.background.backgroundColor = buttonColors.shuffled().first
+        button.backgroundColor = buttonColors.shuffled().first
         
         if firstTime {
             firstTime = false
