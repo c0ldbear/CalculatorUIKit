@@ -10,26 +10,25 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet var showNumbersLabel: UILabel!
+    @IBOutlet var testButton: UIButton!
+    
+    private var pressed: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        let button = UIButton(frame: CGRect(x: 100,
-                                            y: 100,
-                                            width: 200,
-                                            height: 60))
-        button.setTitle("Test", for: .normal)
-        button.setTitleColor(.systemCyan, for: .normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        self.view.addSubview(button)
-        
+        setupTestButton()
     }
     
     @objc
     func buttonAction() {
-        print("Button pressed!")
-        showNumbersLabel.text = "LOL"
+        pressed = !pressed
+        showNumbersLabel.text = pressed ? "LOL" : "Label"
+    }
+    
+    func setupTestButton() {
+        testButton.setTitle("test", for: .normal)
+        testButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
     }
     
 }
