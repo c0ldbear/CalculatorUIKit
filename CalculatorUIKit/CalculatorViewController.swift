@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController {
     
     @IBOutlet var showNumbersLabel: UILabel!
     @IBOutlet var vStack: UIStackView!
@@ -31,7 +31,6 @@ class ViewController: UIViewController {
         
         for (row, titles) in zip(rows, allTitles) {
             for title in titles {
-//                let button = UIButton(frame: CGRect(x: 15, y: 5, width: 150, height: 55))
                 let button = UIButton(type: .custom)
                 button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
                 button.layer.cornerRadius = 2 * button.bounds.size.width
@@ -44,9 +43,6 @@ class ViewController: UIViewController {
             }
         }
         
-//        for (button, title) in zip(buttons, titles.reversed()) {
-//            setupTestButton(for: button, withTitle: title)
-//        }
     }
     
     @objc
@@ -55,7 +51,6 @@ class ViewController: UIViewController {
             return
         }
         
-//        button.configuration?.background.backgroundColor = buttonColors.shuffled().first
         button.backgroundColor = buttonColors.shuffled().first
         
         if firstTime {
