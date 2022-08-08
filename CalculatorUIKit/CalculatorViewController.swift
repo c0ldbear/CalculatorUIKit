@@ -23,26 +23,7 @@ class CalculatorViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         setupNumbersLabel()
-        
-        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow]
-        let allTitles: [[String?]] = [["LåL", "LöL", "LäL"],
-                                   ["LøL", "LæL", "LaaL", "Que"],
-                                   [ "LooL", "LaoL"]]
-        
-        for (row, titles) in zip(rows, allTitles) {
-            for title in titles {
-                let button = UIButton(type: .custom)
-                button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
-                button.layer.cornerRadius = 2 * button.bounds.size.width
-                button.clipsToBounds = true
-                button.backgroundColor = .systemFill
-                button.setTitle(title, for: .normal)
-                button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-                row?.spacing = 15
-                row?.addArrangedSubview(button)
-            }
-        }
-        
+        addButtonsToStackViews()
     }
     
     @objc
@@ -58,20 +39,43 @@ class CalculatorViewController: UIViewController {
             showNumbersLabel.text = button.currentTitle
             return
         }
-        showNumbersLabel.text! += button.currentTitle ?? ""
         
+        if showNumbersLabel.text!.count < 84 {
+            showNumbersLabel.text! += button.currentTitle ?? ""
+        }
     }
     
-    func setupTestButton(for button: UIButton?, withTitle title: String?) {
+    func addButtonsToStackViews() {
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow]
+        let allTitles: [[String?]] = [["LåL", "LöL", "LäL"],
+                                   ["LøL", "LæL", "LaaL", "Que"],
+                                   [ "LooL", "LaoL"]]
+        
+        for (row, titles) in zip(rows, allTitles) {
+            for title in titles {
+                let button = UIButton(type: .custom)
+                setupButton(for: button, withTitle: title)
+                row?.spacing = 15
+                row?.addArrangedSubview(button)
+            }
+        }
+    }
+    
+    func setupButton(for button: UIButton?, withTitle title: String?) {
         guard let button = button else {
             return
         }
         
+        button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
+        button.layer.cornerRadius = 2 * button.bounds.size.width
+        button.clipsToBounds = true
+        button.backgroundColor = .systemFill
         button.setTitle(title, for: .normal)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
     }
     
     func setupNumbersLabel() {
+        showNumbersLabel.font = .monospacedDigitSystemFont(ofSize: 32, weight: .bold)
         showNumbersLabel.text = "LOLs will be shown here\n\nlol"
         showNumbersLabel.numberOfLines = 10
     }
