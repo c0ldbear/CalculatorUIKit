@@ -35,7 +35,7 @@ class CalculatorViewController: UIViewController {
             return
         }
         
-        button.backgroundColor = buttonColors.shuffled().first
+        button.backgroundColor = randomisedBackgroundColor()
         
         if firstTime {
             firstTime = false
@@ -46,6 +46,10 @@ class CalculatorViewController: UIViewController {
         if showNumbersLabel.text!.count < 10 {
             showNumbersLabel.text! += button.currentTitle ?? ""
         }
+    }
+    
+    func randomisedBackgroundColor() -> UIColor? {
+        return buttonColors.shuffled().first
     }
     
     func addButtonsToStackViews() {
