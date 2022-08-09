@@ -30,7 +30,6 @@ class CalculatorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         cancellable = calculatorViewModel.$calculatorModel.sink { calculatorModel in
-            
             self.updateForCalculatorModel(for: calculatorModel)
         }
         
@@ -77,7 +76,8 @@ class CalculatorViewController: UIViewController {
     }
     
     func updateForCalculatorModel(for calculatorModel: CalculatorModel) {
-        showNumbersLabel.text = calculatorModel.input2 ?? calculatorModel.input1 ?? "0"
+        let currentOperationString = CalculatorViewModel.CalculatorButton.operation(calculatorModel.currentOperation).string
+        showNumbersLabel.text = "\(calculatorModel.input1 ?? "") \(currentOperationString) \(calculatorModel.input2 ?? "")"
     }
     
 }
