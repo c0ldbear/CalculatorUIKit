@@ -8,7 +8,41 @@
 import UIKit
 import Combine
 
-class CalculatorViewController: UIViewController, CalculatorViewControllerDelegate  {
+protocol CalculatorViewControllerDelegate: AnyObject {
+    func calculatorViewController(_ controller: CalculatorViewController, didPress calculatorButton: CalculatorViewModel.CalculatorButton)
+}
+
+class CalculatorViewControllerNonMoced: CalculatorViewControllerDelegate {
+    func calculatorViewController(_ controller: CalculatorViewController, didPress calculatorButton: CalculatorViewModel.CalculatorButton) {
+        controller.showNumbersLabel.text = "HEJ DÄR"
+    }
+}
+
+class CalculatorViewControllerMoced: CalculatorViewControllerDelegate {
+    func calculatorViewController(_ controller: CalculatorViewController, didPress calculatorButton: CalculatorViewModel.CalculatorButton) {
+        
+        // UPDATE OF MODEL
+        updateModel(controller, for: calculatorButton)
+        
+        // UPDATE OF VIEW
+        updateView(controller)
+    }
+    
+    private func updateModel(_ controller: CalculatorViewController, for calculatorButton: CalculatorViewModel.CalculatorButton) {
+        switch calculatorButton {
+        case .number(let number):
+            controller.calculatorModel.setInput(number.rawValue)
+        case .operation(let operation):
+            controller.calculatorModel.setOperation(operation)
+        }
+    }
+    
+    private func updateView(_ controller: CalculatorViewController) {
+        controller.showNumbersLabel.text = controller.calculatorModel.input2 ?? controller.calculatorModel.input1 ?? "0"
+    }
+}
+
+class CalculatorViewController: UIViewController {
     
     @IBOutlet var showNumbersLabel: UILabel!
     @IBOutlet var vStack: UIStackView!
@@ -18,10 +52,17 @@ class CalculatorViewController: UIViewController, CalculatorViewControllerDelega
     @IBOutlet var fourthRow: UIStackView!
     @IBOutlet var fifthRow: UIStackView!
     
-    private let calculatorViewModel = CalculatorViewModel()
+    var delegate: CalculatorViewControllerDelegate? = CalculatorViewControllerMoced()
+    
+    var calculatorViewModel = CalculatorViewModel()
+    var calculatorModel = CalculatorModel()
     private var cancellable: AnyCancellable?
     
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
+    
+    func inject(delegate: CalculatorViewControllerDelegate) {
+        self.delegate = delegate
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -30,6 +71,7 @@ class CalculatorViewController: UIViewController, CalculatorViewControllerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        delegate = CalculatorViewControllerMoced()
         
         cancellable = calculatorViewModel.$calculatorModel.sink { calculatorModel in
             
@@ -66,7 +108,9 @@ class CalculatorViewController: UIViewController, CalculatorViewControllerDelega
         
         for (row, calculatorButtons) in zip(rows, CalculatorViewModel.CalculatorButton.allButtons) {
             for calculatorButton in calculatorButtons {
-                let button = setupButton(withTitle: calculatorButton.string, withAction: {self.calculatorViewModel.pressed(calculatorButton)})
+                let button = setupButton(withTitle: calculatorButton.string, withAction: {// self.delegate?.pressed(self, didPress: calculatorButton)
+                    self.delegate?.calculatorViewController(self, didPress: calculatorButton)
+                })
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
