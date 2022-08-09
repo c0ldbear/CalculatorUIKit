@@ -15,7 +15,9 @@ class CalculatorViewController: UIViewController {
     @IBOutlet var secondRow: UIStackView!
     @IBOutlet var thirdRow: UIStackView!
     @IBOutlet var fourthRow: UIStackView!
+    @IBOutlet var fifthRow: UIStackView!
     
+    private var result: Double = 0.0
     var firstTime: Bool = true
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
     
@@ -41,22 +43,23 @@ class CalculatorViewController: UIViewController {
             return
         }
         
-        if showNumbersLabel.text!.count < 84 {
+        if showNumbersLabel.text!.count < 10 {
             showNumbersLabel.text! += button.currentTitle ?? ""
         }
     }
     
     func addButtonsToStackViews() {
-        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow]
-        let allTitles: [[String?]] = [["LaaL", "LåäL", "LåäöL"],
-                                      ["LåL", "LöL", "LäL", "LaåL"],
-                                   ["LøL", "LæL", "LaaL", "Que"],
-                                   [ "LooL", "LaoL", "LaoåL"]]
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow] //  TODO: Add programmatically?
+        let allButtons: [[UIButton.CalculatorButtons]] = [[.clear, .percentage, .division],
+                                                 [.seven, .eight, .nine, .multiplication],
+                                                 [.four, .five, .six, .subtraction],
+                                                 [.one, .two, .three, .addition],
+                                                 [.zero, .punct, .equal]]
         
-        for (row, titles) in zip(rows, allTitles) {
-            for title in titles {
+        for (row, numbers) in zip(rows, allButtons) {
+            for number in numbers {
                 let button = UIButton(type: .custom)
-                setupButton(for: button, withTitle: title)
+                setupButton(for: button, withTitle: number.rawValue)
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
@@ -78,7 +81,8 @@ class CalculatorViewController: UIViewController {
     
     func setupNumbersLabel() {
         showNumbersLabel.font = .monospacedDigitSystemFont(ofSize: 32, weight: .bold)
-        showNumbersLabel.text = "LOLs will be shown here\n\nlol"
+//        showNumbersLabel.text = "LOLs will be shown here\n\nlol"
+        showNumbersLabel.text = "0"
         showNumbersLabel.numberOfLines = 10
     }
 }

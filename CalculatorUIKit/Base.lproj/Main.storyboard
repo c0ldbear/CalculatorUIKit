@@ -20,7 +20,7 @@
                                 <rect key="frame" x="5" y="54" width="418" height="813"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dSo-eu-kPu">
-                                        <rect key="frame" x="0.0" y="0.0" width="418" height="162.66666666666666"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="418" height="135.66666666666666"/>
                                         <accessibility key="accessibilityConfiguration" identifier="ShowNumbers">
                                             <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                         </accessibility>
@@ -29,16 +29,19 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="SGe-Ml-PMj">
-                                        <rect key="frame" x="0.0" y="162.66666666666669" width="418" height="162.66666666666669"/>
+                                        <rect key="frame" x="0.0" y="135.66666666666663" width="418" height="135.33333333333337"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="tQf-3y-h0K">
-                                        <rect key="frame" x="0.0" y="325.33333333333331" width="418" height="162.33333333333331"/>
+                                        <rect key="frame" x="0.0" y="271" width="418" height="135.66666666666663"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="K6G-DC-t04">
-                                        <rect key="frame" x="0.0" y="487.66666666666669" width="418" height="162.66666666666669"/>
+                                        <rect key="frame" x="0.0" y="406.66666666666669" width="418" height="135.33333333333331"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="lzr-tR-y8T">
-                                        <rect key="frame" x="0.0" y="650.33333333333337" width="418" height="162.66666666666663"/>
+                                        <rect key="frame" x="0.0" y="542" width="418" height="135.66666666666663"/>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="3BP-jr-hnJ">
+                                        <rect key="frame" x="0.0" y="677.66666666666663" width="418" height="135.33333333333337"/>
                                     </stackView>
                                 </subviews>
                             </stackView>
@@ -53,6 +56,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="fifthRow" destination="3BP-jr-hnJ" id="zkK-fU-r46"/>
                         <outlet property="firstRow" destination="SGe-Ml-PMj" id="D0g-Dp-e0c"/>
                         <outlet property="fourthRow" destination="lzr-tR-y8T" id="M6C-lk-K3p"/>
                         <outlet property="secondRow" destination="tQf-3y-h0K" id="QSH-Xs-Ci6"/>
