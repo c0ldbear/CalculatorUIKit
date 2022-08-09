@@ -16,7 +16,7 @@ final class CalculatorViewModel: ObservableObject {
         
         static let allButtons: [[CalculatorButton]] = [[ .operation(.clear), .operation(.percentage), .operation(.division)],
                                                        [.number(.seven), .number(.eight), .number(.nine), .operation(.multiplication)],
-                                                       [.number(.four), .number(.five), .number(.six), .operation(.multiplication)],
+                                                       [.number(.four), .number(.five), .number(.six), .operation(.subtraction)],
                                                        [.number(.one), .number(.two), .number(.three), .operation(.addition)],
                                                        [.number(.zero), .number(.punct), .operation(.equal)]]
         
