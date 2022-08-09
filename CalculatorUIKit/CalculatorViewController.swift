@@ -15,6 +15,7 @@ class CalculatorViewController: UIViewController {
     @IBOutlet var secondRow: UIStackView!
     @IBOutlet var thirdRow: UIStackView!
     @IBOutlet var fourthRow: UIStackView!
+    @IBOutlet var fifthRow: UIStackView!
     
     var firstTime: Bool = true
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
@@ -47,16 +48,17 @@ class CalculatorViewController: UIViewController {
     }
     
     func addButtonsToStackViews() {
-        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow]
-        let allTitles: [[String?]] = [["LaaL", "LåäL", "LåäöL"],
-                                      ["LåL", "LöL", "LäL", "LaåL"],
-                                   ["LøL", "LæL", "LaaL", "Que"],
-                                   [ "LooL", "LaoL", "LaoåL"]]
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow] //  TODO: Add programmatically? 
+        let allButtons: [[CalculatorButtons]] = [[.clear, .percentage, .division, .root],
+                                                 [.seven, .eight, .nine, .multiplication],
+                                                 [.four, .five, .six, .subtraction],
+                                                 [.one, .two, .three, .addition],
+                                                 [.zero, .punct, .equal]]
         
-        for (row, titles) in zip(rows, allTitles) {
-            for title in titles {
+        for (row, numbers) in zip(rows, allButtons) {
+            for number in numbers {
                 let button = UIButton(type: .custom)
-                setupButton(for: button, withTitle: title)
+                setupButton(for: button, withTitle: number.rawValue)
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }

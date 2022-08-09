@@ -26,4 +26,5 @@ enum CalculatorButtons: String {
     case percentage = "%"
     case root = "√"
     case equal = "="
+    case punct = "."
 }
