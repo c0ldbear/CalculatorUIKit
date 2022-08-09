@@ -14,6 +14,7 @@ class CalculatorViewController: UIViewController {
     @IBOutlet var firstRow: UIStackView!
     @IBOutlet var secondRow: UIStackView!
     @IBOutlet var thirdRow: UIStackView!
+    @IBOutlet var fourthRow: UIStackView!
     
     var firstTime: Bool = true
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
@@ -46,16 +47,17 @@ class CalculatorViewController: UIViewController {
     }
     
     func addButtonsToStackViews() {
-        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow]
-        let allTitles: [[String?]] = [["LåL", "LöL", "LäL"],
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow]
+        let allTitles: [[String?]] = [["LaaL", "LåäL", "LåäöL"],
+                                      ["LåL", "LöL", "LäL", "LaåL"],
                                    ["LøL", "LæL", "LaaL", "Que"],
-                                   [ "LooL", "LaoL"]]
+                                   [ "LooL", "LaoL", "LaoåL"]]
         
         for (row, titles) in zip(rows, allTitles) {
             for title in titles {
                 let button = UIButton(type: .custom)
                 setupButton(for: button, withTitle: title)
-                row?.spacing = 15
+                row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
         }
@@ -67,7 +69,7 @@ class CalculatorViewController: UIViewController {
         }
         
         button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
-        button.layer.cornerRadius = 2 * button.bounds.size.width
+        button.layer.cornerRadius = Double.pi/2 * button.bounds.size.width
         button.clipsToBounds = true
         button.backgroundColor = .systemFill
         button.setTitle(title, for: .normal)
