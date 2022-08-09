@@ -51,13 +51,20 @@ struct CalculatorModel {
         }
     }
     
-    private(set) var input1: String?
+    private(set) var input1: String? = "0"
     private(set) var input2: String?
     private(set) var currentOperation: Operation = Operation.none
     
     private var result: Double? {
-        guard let input1 = Double(input1!),
-              let input2 = Double(input2!) else {
+        guard let input1 = Double(input1!) else {
+            return nil
+        }
+        
+        if currentOperation == .percentage {
+            return input1 / 100
+        }
+        
+        guard let input2 = Double(input2!) else {
             return nil
         }
         
@@ -70,31 +77,33 @@ struct CalculatorModel {
             return input1 * input2
         case .division:
             return input2 != 0 ? input1 / input2 : 0
+        case .percentage:
+            return input1 / 100
         default:
             return nil
         }
     }
     
-    mutating func appendInput1(_ input: String) {
-        input1?.append(input)
+    mutating func appendInput(for oldInput: String?, with newInput: String) {
+        if oldInput == input1 {
+            input1?.append(newInput)
+        } else {
+            input2?.append(newInput)
+        }
     }
     
-    mutating func appendInput2(_ input: String) {
-        input2?.append(input)
-    }
-    
-    mutating func setInput(_ input: String) {
+    mutating func setInput(_ newInput: String) {
         if currentOperation == .none {
-            if input1 == nil {
-                input1 = input
+            if input1 == "0" {
+                input1 = newInput
             } else {
-                appendInput1(input)
+                appendInput(for: input1, with: newInput)
             }
         } else {
             if input2 == nil {
-                input2 = input
+                input2 = newInput
             } else {
-                appendInput2(input)
+                appendInput(for: input2, with: newInput)
             }
         }
     }
@@ -102,19 +111,30 @@ struct CalculatorModel {
     mutating func setOperation(_ operation: Operation) {
         switch operation {
         case .equal:
-            input1 = String(result ?? 0)
-            input2 = nil
+            clearAll(exceptInput1: result)
         case .clear:
-            input1 = nil
-            input2 = nil
-            currentOperation = .none
+            clearAll()
+        case .percentage:
+            currentOperation = operation
+            clearAll(exceptInput1: result)
         default:
             if input1 != nil && input2 != nil {
-                input1 = String(result ?? 0)
-                input2 = nil
+                clearAll(exceptInput1: result, exceptOperations: operation)
             } else {
                 currentOperation = operation
             }
         }
+    }
+    
+    private func forTrailingZero(_ temp: Double?) -> String {
+        return String(format: "%g", temp ?? 0)
+    }
+    
+    mutating private func clearAll(exceptInput1 input1: Double? = 0,
+                                   exceptInput2 input2: Double? = nil,
+                                   exceptOperations currentOperation: Operation = .none) {
+        self.input1 = input1 != nil ? forTrailingZero(input1) : nil
+        self.input2 = input2 != nil ? forTrailingZero(input2) : nil
+        self.currentOperation = currentOperation
     }
 }
