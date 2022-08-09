@@ -14,8 +14,11 @@ final class CalculatorViewModel: ObservableObject {
         case operation(CalculatorModel.Operation)
         case number(CalculatorModel.Number)
         
-        static let allButtons: [[CalculatorButton]] = [[ .operation(.clear), .operation(.percentage), .operation(.division), .operation(.equal)],
-                                                       [.number(.seven), .number(.eight), .number(.nine), .operation(.multiplication)]]
+        static let allButtons: [[CalculatorButton]] = [[ .operation(.clear), .operation(.percentage), .operation(.division)],
+                                                       [.number(.seven), .number(.eight), .number(.nine), .operation(.multiplication)],
+                                                       [.number(.four), .number(.five), .number(.six), .operation(.multiplication)],
+                                                       [.number(.one), .number(.two), .number(.three), .operation(.addition)],
+                                                       [.number(.zero), .number(.punct), .operation(.equal)]]
         
         var string: String {
             switch self {
@@ -79,13 +82,7 @@ final class CalculatorViewModel: ObservableObject {
         
     @Published private(set) var calculatorModel = CalculatorModel()
     
-    private(set) var firstTime: Bool = true
-    
     init() {}
-    
-    func setFirstTime(_ newValue: Bool) {
-        firstTime = newValue
-    }
     
     func pressed(_ calculatorButton: CalculatorButton) {
         switch calculatorButton {

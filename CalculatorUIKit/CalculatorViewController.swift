@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class CalculatorViewController: UIViewController, CalculatorViewControllerDelegate  {
+class CalculatorViewController: UIViewController {
     
     @IBOutlet var showNumbersLabel: UILabel!
     @IBOutlet var vStack: UIStackView!
@@ -29,50 +29,28 @@ class CalculatorViewController: UIViewController, CalculatorViewControllerDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
         cancellable = calculatorViewModel.$calculatorModel.sink { calculatorModel in
             
             self.updateForCalculatorModel(for: calculatorModel)
-            
         }
         
         setupNumbersLabel()
         addButtonsToStackViews()
     }
     
-    @objc
-    func buttonAction(for button: UIButton?) {
-        guard let button = button,
-              let title = button.currentTitle else {
-            return
-        }
-        
-        button.backgroundColor = randomisedBackgroundColor()
-        
-        if calculatorViewModel.firstTime {
-            calculatorViewModel.setFirstTime(false)
-            showNumbersLabel.text = title
-            return
-        }
-        
-        if showNumbersLabel.text!.count < 10 {
-            showNumbersLabel.text! += button.currentTitle ?? ""
-        }
-    }
-    
     func addButtonsToStackViews() {
-        let rows: [UIStackView?] = [firstRow, secondRow]
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow]
         
         for (row, calculatorButtons) in zip(rows, CalculatorViewModel.CalculatorButton.allButtons) {
             for calculatorButton in calculatorButtons {
-                let button = setupButton(withTitle: calculatorButton.string, withAction: {self.calculatorViewModel.pressed(calculatorButton)})
+                let button = setupButton(withTitle: calculatorButton.string, withAction: {
+                    self.calculatorViewModel.pressed(calculatorButton)
+                })
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
         }
     }
-    
     
     func setupButton(withTitle title: String, withAction action: @escaping () -> ()) -> UIButton {
         let button = UIButton(type: .custom, primaryAction: UIAction(title: title, handler: {_ in
@@ -103,4 +81,3 @@ class CalculatorViewController: UIViewController, CalculatorViewControllerDelega
     }
     
 }
-
