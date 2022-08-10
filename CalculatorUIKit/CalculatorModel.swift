@@ -126,15 +126,15 @@ struct CalculatorModel {
         }
     }
     
-    private func forTrailingZero(_ temp: Double?) -> String {
+    private func removeTrailingZeroes(_ temp: Double?) -> String {
         return String(format: "%g", temp ?? 0)
     }
     
     mutating private func clearAll(exceptInput1 input1: Double? = 0,
                                    exceptInput2 input2: Double? = nil,
                                    exceptOperations currentOperation: Operation = .none) {
-        self.input1 = input1 != nil ? forTrailingZero(input1) : nil
-        self.input2 = input2 != nil ? forTrailingZero(input2) : nil
+        self.input1 = input1 != nil ? removeTrailingZeroes(input1) : nil
+        self.input2 = input2 != nil ? removeTrailingZeroes(input2) : nil
         self.currentOperation = currentOperation
     }
 }
