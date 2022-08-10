@@ -29,8 +29,11 @@ class CalculatorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        cancellable = calculatorViewModel.$calculatorModel.sink { calculatorModel in
-            self.updateForCalculatorModel(for: calculatorModel)
+        cancellable = calculatorViewModel.$calculatorModel.sink { [weak self] calculatorModel in
+            guard let weakSelf = self else {
+                return
+            }
+            weakSelf.updateForCalculatorModel(for: calculatorModel)
         }
         
         setupNumbersLabel()
@@ -40,9 +43,9 @@ class CalculatorViewController: UIViewController {
     func addButtonsToStackViews() {
         let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow]
         
-        for (row, calculatorButtons) in zip(rows, CalculatorViewModel.CalculatorButton.allButtons) {
+        for (row, calculatorButtons) in zip(rows, CalculatorViewModel.allButtons) {
             for calculatorButton in calculatorButtons {
-                let button = setupButton(withTitle: calculatorButton.string, withAction: {
+                let button = setupButton(with: calculatorButton, withAction: {
                     self.calculatorViewModel.pressed(calculatorButton)
                 })
                 row?.spacing = 10
@@ -51,21 +54,30 @@ class CalculatorViewController: UIViewController {
         }
     }
     
-    func setupButton(withTitle title: String, withAction action: @escaping () -> Void) -> UIButton {
+    func setupButton(with buttonType: CalculatorViewModel.CalculatorButton, withAction action: @escaping () -> Void) -> UIButton {
+        let title = buttonType.string
         let button = UIButton(type: .custom, primaryAction: UIAction(title: title, handler: { [weak self] 🎬 in
-            guard let weakSelf = self else {
+            guard let weakSelf = self,
+                  let button = 🎬.sender as? UIButton,
+                  let buttonTitle = button.currentTitle else {
                 return
             }
             
-            let sender = 🎬.sender as! UIButton
-            sender.backgroundColor = weakSelf.randomisedBackgroundColor()
+            if ".0123456789".contains(buttonTitle) {
+                button.backgroundColor = weakSelf.randomisedBackgroundColor()
+            }
             action()
         }))
         
         button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
         button.layer.cornerRadius = Double.pi/2 * button.bounds.size.width
         button.clipsToBounds = true
-        button.backgroundColor = .systemFill
+        switch buttonType {
+        case .operation:
+            button.backgroundColor = .systemBrown
+        case .number:
+            button.backgroundColor = .systemFill
+        }
         button.setTitle(title, for: .normal)
         
         return button
@@ -83,7 +95,10 @@ class CalculatorViewController: UIViewController {
     
     func updateForCalculatorModel(for calculatorModel: CalculatorModel) {
         let currentOperationString = CalculatorViewModel.CalculatorButton.operation(calculatorModel.currentOperation).string
-        showNumbersLabel.text = "\(calculatorModel.input1 ?? "") \(currentOperationString) \(calculatorModel.input2 ?? "")"
+        let firstInput: String = "\(calculatorModel.input1 ?? "")"
+        let secondInput: String = "\(calculatorModel.input2 ?? "")"
+        
+        showNumbersLabel.text = "\(firstInput) \(currentOperationString) \(secondInput)"
     }
     
 }
