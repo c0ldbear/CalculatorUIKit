@@ -53,6 +53,9 @@ final class CalculatorViewModel: ObservableObject {
                                                    [.number(.one), .number(.two), .number(.three), .operation(.addition)],
                                                    [.number(.zero), .number(.punct), .operation(.equal)]]
     
+    let numberButtons = ".0123456789"
+    let operationButtons = "x÷+-%c="
+    
     init() {}
     
     func pressed(_ calculatorButton: CalculatorButton) {
