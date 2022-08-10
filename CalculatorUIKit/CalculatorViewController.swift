@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class CalculatorViewController: UIViewController {
     
@@ -17,72 +18,87 @@ class CalculatorViewController: UIViewController {
     @IBOutlet var fourthRow: UIStackView!
     @IBOutlet var fifthRow: UIStackView!
     
-    private var result: Double = 0.0
-    var firstTime: Bool = true
+    private let calculatorViewModel = CalculatorViewModel()
+    private var cancellable: AnyCancellable?
+    
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        cancellable = calculatorViewModel.$calculatorModel.sink { [weak self] calculatorModel in
+            guard let weakSelf = self else {
+                return
+            }
+            weakSelf.updateForCalculatorModel(for: calculatorModel)
+        }
         
         setupNumbersLabel()
         addButtonsToStackViews()
     }
     
-    @objc
-    func buttonAction(for button: UIButton?) {
-        guard let button = button else {
-            return
-        }
-        
-        button.backgroundColor = buttonColors.shuffled().first
-        
-        if firstTime {
-            firstTime = false
-            showNumbersLabel.text = button.currentTitle
-            return
-        }
-        
-        if showNumbersLabel.text!.count < 10 {
-            showNumbersLabel.text! += button.currentTitle ?? ""
-        }
-    }
-    
     func addButtonsToStackViews() {
-        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow] //  TODO: Add programmatically?
-        let allButtons: [[UIButton.CalculatorButtons]] = [[.clear, .percentage, .division],
-                                                 [.seven, .eight, .nine, .multiplication],
-                                                 [.four, .five, .six, .subtraction],
-                                                 [.one, .two, .three, .addition],
-                                                 [.zero, .punct, .equal]]
+        let rows: [UIStackView?] = [firstRow, secondRow, thirdRow, fourthRow, fifthRow]
         
-        for (row, numbers) in zip(rows, allButtons) {
-            for number in numbers {
-                let button = UIButton(type: .custom)
-                setupButton(for: button, withTitle: number.rawValue)
+        for (row, calculatorButtons) in zip(rows, CalculatorViewModel.allButtons) {
+            for calculatorButton in calculatorButtons {
+                let button = setupButton(with: calculatorButton, withAction: {
+                    self.calculatorViewModel.pressed(calculatorButton)
+                })
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
         }
     }
     
-    func setupButton(for button: UIButton?, withTitle title: String?) {
-        guard let button = button else {
-            return
-        }
+    func setupButton(with buttonType: CalculatorViewModel.CalculatorButton, withAction action: @escaping () -> Void) -> UIButton {
+        let title = buttonType.string
+        let button = UIButton(type: .custom, primaryAction: UIAction(title: title, handler: { [weak self] 🎬 in
+            guard let weakSelf = self,
+                  let button = 🎬.sender as? UIButton,
+                  let buttonTitle = button.currentTitle else {
+                return
+            }
+            
+            if ".0123456789".contains(buttonTitle) {
+                button.backgroundColor = weakSelf.randomisedBackgroundColor()
+            }
+            action()
+        }))
         
         button.frame = CGRect(x: 5, y: 5, width: 65, height: 65)
         button.layer.cornerRadius = Double.pi/2 * button.bounds.size.width
         button.clipsToBounds = true
-        button.backgroundColor = .systemFill
+        switch buttonType {
+        case .operation:
+            button.backgroundColor = .systemBrown
+        case .number:
+            button.backgroundColor = .systemFill
+        }
         button.setTitle(title, for: .normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        
+        return button
+    }
+    
+    func randomisedBackgroundColor() -> UIColor? {
+        return buttonColors.shuffled().first
     }
     
     func setupNumbersLabel() {
         showNumbersLabel.font = .monospacedDigitSystemFont(ofSize: 32, weight: .bold)
-//        showNumbersLabel.text = "LOLs will be shown here\n\nlol"
         showNumbersLabel.text = "0"
-        showNumbersLabel.numberOfLines = 10
+        showNumbersLabel.numberOfLines = 2
     }
+    
+    func updateForCalculatorModel(for calculatorModel: CalculatorModel) {
+        let currentOperationString = CalculatorViewModel.CalculatorButton.operation(calculatorModel.currentOperation).string
+        let firstInput: String = "\(calculatorModel.input1 ?? "")"
+        let secondInput: String = "\(calculatorModel.input2 ?? "")"
+        
+        showNumbersLabel.text = "\(firstInput) \(currentOperationString) \(secondInput)"
+    }
+    
 }
