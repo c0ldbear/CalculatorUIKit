@@ -85,10 +85,15 @@ struct CalculatorModel {
     }
     
     mutating func appendInput(for oldInput: String?, with newInput: String) {
-        if oldInput == input1 {
-            input1?.append(newInput)
-        } else {
-            input2?.append(newInput)
+        switch oldInput {
+        case input1:
+            if input1!.count < 9 {
+                input1?.append(newInput)
+            }
+        default:
+            if input2!.count < 9 {
+                input2?.append(newInput)
+            }
         }
     }
     
