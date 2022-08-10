@@ -54,6 +54,7 @@ struct CalculatorModel {
     private(set) var input1: String? = "0"
     private(set) var input2: String?
     private(set) var currentOperation: Operation = Operation.none
+    private var resetLabel: Bool = true
     
     private var result: Double? {
         guard let input1 = Double(input1!) else {
@@ -98,14 +99,16 @@ struct CalculatorModel {
     }
     
     mutating func setInput(_ newInput: String) {
-        if currentOperation == .none {
-            if input1 == "0" {
+        switch currentOperation {
+        case .none:
+            if resetLabel {
                 input1 = newInput
+                resetLabel = false
             } else {
                 appendInput(for: input1, with: newInput)
             }
-        } else {
-            if input2 == nil {
+        default:
+            if input2 == nil || input2 == "0" {
                 input2 = newInput
             } else {
                 appendInput(for: input2, with: newInput)
@@ -117,8 +120,10 @@ struct CalculatorModel {
         switch operation {
         case .equal:
             clearAll(exceptInput1: result)
+            resetLabel = true
         case .clear:
             clearAll()
+            resetLabel = true
         case .percentage:
             currentOperation = operation
             clearAll(exceptInput1: result)
