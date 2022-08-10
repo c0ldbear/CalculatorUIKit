@@ -22,6 +22,7 @@ class CalculatorViewController: UIViewController {
     private var cancellable: AnyCancellable?
     
     var buttonColors: [UIColor] = [ .systemCyan, .systemMint, .systemPink, .systemTeal, .systemIndigo ]
+    var calculatorButtons: [String: UIButton] = [:]
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -48,6 +49,7 @@ class CalculatorViewController: UIViewController {
                 let button = setupButton(with: calculatorButton, withAction: {
                     self.calculatorViewModel.pressed(calculatorButton)
                 })
+                self.calculatorButtons[button.currentTitle!] = button
                 row?.spacing = 10
                 row?.addArrangedSubview(button)
             }
@@ -63,9 +65,16 @@ class CalculatorViewController: UIViewController {
                 return
             }
             
-            if ".0123456789".contains(buttonTitle) {
+            if weakSelf.calculatorViewModel.numberButtons.contains(buttonTitle) {
                 button.backgroundColor = weakSelf.randomisedBackgroundColor()
             }
+            
+            if weakSelf.calculatorViewModel.operationButtons.contains(buttonTitle) {
+                for calcButton in weakSelf.calculatorViewModel.numberButtons {
+                    weakSelf.calculatorButtons[String(calcButton)]?.backgroundColor = .systemFill
+                }
+            }
+            
             action()
         }))
         
