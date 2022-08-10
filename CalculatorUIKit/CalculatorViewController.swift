@@ -51,8 +51,14 @@ class CalculatorViewController: UIViewController {
         }
     }
     
-    func setupButton(withTitle title: String, withAction action: @escaping () -> ()) -> UIButton {
-        let button = UIButton(type: .custom, primaryAction: UIAction(title: title, handler: {_ in
+    func setupButton(withTitle title: String, withAction action: @escaping () -> Void) -> UIButton {
+        let button = UIButton(type: .custom, primaryAction: UIAction(title: title, handler: { [weak self] 🎬 in
+            guard let weakSelf = self else {
+                return
+            }
+            
+            let sender = 🎬.sender as! UIButton
+            sender.backgroundColor = weakSelf.randomisedBackgroundColor()
             action()
         }))
         
@@ -72,7 +78,7 @@ class CalculatorViewController: UIViewController {
     func setupNumbersLabel() {
         showNumbersLabel.font = .monospacedDigitSystemFont(ofSize: 32, weight: .bold)
         showNumbersLabel.text = "0"
-        showNumbersLabel.numberOfLines = 10
+        showNumbersLabel.numberOfLines = 2
     }
     
     func updateForCalculatorModel(for calculatorModel: CalculatorModel) {
